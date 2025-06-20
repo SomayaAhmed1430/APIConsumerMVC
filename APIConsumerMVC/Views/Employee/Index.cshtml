@@ -1,0 +1,38 @@
+﻿@model List<APIConsumerMVC.DTO.EmpWithDept>
+
+@{
+    ViewData["Title"] = "Employees with Departments";
+}
+
+<h1>Employees List</h1>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Employee Name</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.EmpName</td>
+                <td>@emp.DeptName</td>
+                <td>
+                    <a style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px; display:inline-grid; margin-top:5px;"
+                       href="/Employee/Details/@emp.Id">
+                        Details
+                    </a>
+                    <a href="/Employee/Edit/" class="btn btn-warning">Edit</a>
+                    <a href="/Employee/Delete/" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px;"
+   href="/Employee/New">
+    Add New Emp
+</a>
