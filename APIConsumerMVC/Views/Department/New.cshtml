@@ -1,0 +1,23 @@
+﻿@model Department
+
+@{
+    ViewData["Title"] = "Add New Department";
+}
+
+<h2>Add New Department</h2>
+
+<form asp-action="SaveNew" method="post">
+    <div>
+        <label>Name</label>
+        <input class="form-control" name="Name" />
+    </div>
+    <div>
+        <label>Description</label>
+        <input class="form-control" name="Description" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">Add</button>
+</form>
+<a style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px; margin-top:10px; display: inline-flex;"
+   href="/Department/Index">Back To List
+</a>

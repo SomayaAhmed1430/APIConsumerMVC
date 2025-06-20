@@ -1,0 +1,36 @@
+﻿@model List<Department>
+
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<h1>Departments List</h1>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dept in Model)
+        {
+            <tr>
+                <td>@dept.Id</td>
+                <td>@dept.Name</td>
+                <td>@dept.Description</td>
+                <td>
+                    <a href="/Department/Edit/@dept.Id" class="btn btn-warning">Edit</a>
+                    <a href="/Department/Delete/@dept.Id" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a 
+    style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px;" 
+    href="/Department/New">Add New Dept
+</a>
