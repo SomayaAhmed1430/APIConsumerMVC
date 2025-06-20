@@ -90,6 +90,7 @@ namespace APIConsumerMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
+
             }
 
             return Content("Failed to delete");
