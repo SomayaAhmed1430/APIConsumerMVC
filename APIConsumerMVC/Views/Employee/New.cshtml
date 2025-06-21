@@ -1,0 +1,29 @@
+﻿@model APIConsumerMVC.ViewModels.EmployeeFormViewModel
+
+<h2>Add New Employee</h2>
+
+<form method="post" asp-action="SaveNew">
+    <div>
+        <label>Name</label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+
+    <div>
+        <label>Address</label>
+        <input type="text" asp-for="Address" class="form-control" />
+    </div>
+
+    <div>
+        <label>Department</label>
+        <select asp-for="DepartmentId" class="form-control"
+                asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+            <option value="">-- Select Department --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add</button>
+</form>
+<a style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px; margin-top:10px; display: inline-flex;"
+   href="/Department/Index">
+    Back To List
+</a>

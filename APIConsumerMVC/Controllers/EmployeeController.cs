@@ -3,6 +3,8 @@ using APIConsumerMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using APIConsumerMVC.DTO;
+using APIConsumerMVC.ViewModels;
+using System.Text;
 
 
 namespace APIConsumerMVC.Controllers
@@ -42,5 +44,58 @@ namespace APIConsumerMVC.Controllers
             }
             return NotFound();
         }
+
+
+        public async Task<IActionResult> New() 
+        {
+            var model = new EmployeeFormViewModel();
+
+            HttpResponseMessage response = await client.GetAsync($"Department");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                model.Departments = JsonConvert.DeserializeObject<List<Department>>(data);
+            }
+            else
+            {
+                model.Departments = new List<Department>();
+            }
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveNew(EmployeeFormViewModel vm)
+        {
+            Employee emp = new Employee
+            {
+                Name = vm.Name,
+                Address = vm.Address,
+                DepartmentId = vm.DepartmentId
+            };
+
+            var data = JsonConvert.SerializeObject(emp);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync("Employee", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // If error, reload department list again
+            HttpResponseMessage deptResponse = await client.GetAsync("Department");
+            if (deptResponse.IsSuccessStatusCode)
+            {
+                string deptData = await deptResponse.Content.ReadAsStringAsync();
+                vm.Departments = JsonConvert.DeserializeObject<List<Department>>(deptData);
+            }
+
+            return View("New", vm);
+        }
+
     }
 }
