@@ -99,6 +99,55 @@ namespace APIConsumerMVC.Controllers
 
 
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var empResponse = await client.GetAsync($"Employee/{id}");
+            var deptResponse = await client.GetAsync("Department");
+
+            if (!empResponse.IsSuccessStatusCode || !deptResponse.IsSuccessStatusCode)
+                return NotFound();
+
+            var empData = await empResponse.Content.ReadAsStringAsync();
+            var deptData = await deptResponse.Content.ReadAsStringAsync();
+
+            var emp = JsonConvert.DeserializeObject<Employee>(empData);
+            var departments = JsonConvert.DeserializeObject<List<Department>>(deptData);
+
+            var vm = new EmployeeFormViewModel
+            {
+                Id = emp.Id,
+                Name = emp.Name,
+                Address = emp.Address,
+                DepartmentId = emp.DepartmentId,
+                Departments = departments
+            };
+
+            return View("Edit", vm);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EmployeeFormViewModel vm)
+        {
+            var updatedEmp = new Employee
+            {
+                Id = vm.Id,
+                Name = vm.Name,
+                Address = vm.Address,
+                DepartmentId = vm.DepartmentId
+            };
+
+            var jsonData = JsonConvert.SerializeObject(updatedEmp);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"Employee/{vm.Id}", content);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction("Index");
+
+            return View("Edit", vm); 
+        }
 
 
 
