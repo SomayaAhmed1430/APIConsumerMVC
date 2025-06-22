@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
+using APIConsumerMVC.DTO;
 
 namespace APIConsumerMVC.Controllers
 {
@@ -17,15 +18,15 @@ namespace APIConsumerMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage response = await client.GetAsync("Department");
+            HttpResponseMessage response = await client.GetAsync("Department/EmpCount");
 
             if (response.IsSuccessStatusCode)
             {
                 string data = await response.Content.ReadAsStringAsync();
-                var depts = JsonConvert.DeserializeObject<List<Department>>(data);
+                var depts = JsonConvert.DeserializeObject<List<DeptWithEmp>>(data);
                 return View(depts);
             }
-            return View(new List<Department>());
+            return View(new List<DeptWithEmp>());
         }
 
         public IActionResult New()

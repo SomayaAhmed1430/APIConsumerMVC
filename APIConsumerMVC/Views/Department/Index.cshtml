@@ -1,4 +1,4 @@
-﻿@model List<Department>
+﻿@model List<APIConsumerMVC.DTO.DeptWithEmp>
 
 @{
     ViewData["Title"] = "Departments";
@@ -9,9 +9,8 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
+            <th>Department Name</th>
+            <th>Employees Count</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,12 +18,15 @@
         @foreach (var dept in Model)
         {
             <tr>
-                <td>@dept.Id</td>
-                <td>@dept.Name</td>
-                <td>@dept.Description</td>
+                <td>@dept.DeptName</td>
+                <td>@dept.EmpCount</td>
                 <td>
-                    <a href="/Department/Edit/@dept.Id" class="btn btn-warning">Edit</a>
-                    <a href="/Department/Delete/@dept.Id" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <a style="text-decoration: none; color:white; background-color:blueviolet; padding: 10px; border-radius: 5px; display:inline-grid; margin-top:5px;"
+                       href="/Employee/Details/@dept.DeptId">
+                        Details
+                    </a>
+                    <a href="/Department/Edit/@dept.DeptId" class="btn btn-warning">Edit</a>
+                    <a href="/Department/Delete/@dept.DeptId" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
                 </td>
             </tr>
         }
