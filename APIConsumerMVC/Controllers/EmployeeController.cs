@@ -97,5 +97,22 @@ namespace APIConsumerMVC.Controllers
             return View("New", vm);
         }
 
+
+
+
+
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            HttpResponseMessage response = await client.DeleteAsync($"Employee/{id}");
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction("Index");
+
+            return NotFound(); 
+        }
+
+
     }
 }
