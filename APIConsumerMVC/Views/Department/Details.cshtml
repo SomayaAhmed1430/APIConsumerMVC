@@ -1,0 +1,30 @@
+﻿@model APIConsumerMVC.DTO.DeptWithEmps
+
+@{
+    ViewData["Title"] = "Department Details";
+}
+
+@if (Model != null)
+{
+    <h2>@Model.DeptName - Details</h2>
+    <h3>@Model.Description</h3>
+
+    <h4>Employees in this Department:</h4>
+    <ul>
+        @if (Model.EmpNames != null && Model.EmpNames.Any())
+        {
+            foreach (var emp in Model.EmpNames)
+            {
+                <li>@emp</li>
+            }
+        }
+        else
+        {
+            <li>No employees in this department.</li>
+        }
+    </ul>
+}
+else
+{
+    <h3 style="color:red;">No data found for this department.</h3>
+}

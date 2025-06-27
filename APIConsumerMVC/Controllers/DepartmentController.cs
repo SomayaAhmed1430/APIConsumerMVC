@@ -52,6 +52,27 @@ namespace APIConsumerMVC.Controllers
         }
 
 
+
+        public async Task<IActionResult> Details(string name)
+        {
+            HttpResponseMessage response = await client.GetAsync($"Department/WithEmployees");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(data);  
+
+                var allDepts = JsonConvert.DeserializeObject<List<DeptWithEmps>>(data);
+                var dept = allDepts.FirstOrDefault(d => d.DeptName == name);
+                return View(dept);
+            }
+
+            return NotFound();
+        }
+
+
+
+
         public async Task<IActionResult> Edit(int id)
         {
             HttpResponseMessage response = await client.GetAsync($"Department/{id}");
