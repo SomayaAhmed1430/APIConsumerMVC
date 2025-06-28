@@ -11,6 +11,10 @@ namespace APIConsumerMVC
 
             builder.Services.AddHttpClient();
 
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSession();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,6 +31,8 @@ namespace APIConsumerMVC
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

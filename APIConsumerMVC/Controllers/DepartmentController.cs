@@ -4,20 +4,42 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
 using APIConsumerMVC.DTO;
+using System.Net.Http.Headers;
 
 namespace APIConsumerMVC.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly HttpClient client;
-        public DepartmentController(IHttpClientFactory factory)
+        private readonly IHttpClientFactory _factory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public DepartmentController(IHttpClientFactory factory, IHttpContextAccessor httpContextAccessor)
         {
-            client = factory.CreateClient();
-            client.BaseAddress = new Uri("http://localhost:23398/api/");
+            _factory = factory;
+            _httpContextAccessor = httpContextAccessor;
         }
+
+
+        private HttpClient CreateClientWithToken()
+        {
+            var client = _factory.CreateClient();
+            client.BaseAddress = new Uri("http://localhost:23398/api/");
+
+            var token = HttpContext.Session.GetString("JWToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
+
+
+
 
         public async Task<IActionResult> Index()
         {
+            var client = CreateClientWithToken();
             HttpResponseMessage response = await client.GetAsync("Department/EmpCount");
 
             if (response.IsSuccessStatusCode)
@@ -35,9 +57,17 @@ namespace APIConsumerMVC.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> SaveNew(Department deptFromReq)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("JWToken")))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var client = CreateClientWithToken();
+
             var data = JsonConvert.SerializeObject(deptFromReq);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
@@ -52,9 +82,9 @@ namespace APIConsumerMVC.Controllers
         }
 
 
-
         public async Task<IActionResult> Details(string name)
         {
+            var client = CreateClientWithToken();
             HttpResponseMessage response = await client.GetAsync($"Department/WithEmployees");
 
             if (response.IsSuccessStatusCode)
@@ -75,6 +105,7 @@ namespace APIConsumerMVC.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            var client = CreateClientWithToken();
             HttpResponseMessage response = await client.GetAsync($"Department/{id}");
 
             if (response.IsSuccessStatusCode)
@@ -91,6 +122,7 @@ namespace APIConsumerMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveEdit(Department deptFromForm)
         {
+            var client = CreateClientWithToken();
             var data = JsonConvert.SerializeObject(deptFromForm);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
@@ -107,12 +139,18 @@ namespace APIConsumerMVC.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("JWToken")))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var client = CreateClientWithToken();
+
             HttpResponseMessage response = await client.DeleteAsync($"Department/{id}");
 
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
-
             }
 
             return Content("Failed to delete");
